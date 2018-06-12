@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>office</title>
+</head>
+<body>
+	<input type="file" id="upload">
+</body>
+</html>
+<script type="text/javascript" src="dist/sp-excel.js"></script>
+<script type="text/javascript">
+	window.onload = function(){
+		var data = {
+			id:"upload",
+			fun:"test"
+			// option:{
+			// 	a:1,
+			// }
+		}
+		var myoffice = new spexcel(data);
+	}
+
+	function test(data){
+        console.log(data);
+	}
+</script>
