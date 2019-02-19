@@ -1,16 +1,18 @@
-var spexcel = function(data) {
-    this.id = data.id;
-    this.fun = data.fun;
-    this.option = data.option;
-    this.forexcel();
-}
+var spexcel;
+(function(){
+    "use strict";
+    spexcel = function(data) {
+        this.id = data.id;
+        this.fun = data.fun;
+        this.option = data.option;
+        this.forexcel();
+    };
 
 spexcel.prototype.forexcel = function() {
 	var _this = this;
     document.getElementById(this.id).onchange = function() {
         var file,filetype,acctype = ["txt","xls","xlsx"],num = 0;
-        if (window.ActiveXObject) //IE
-        {
+        if (window.ActiveXObject) { //IE
             this.select();
             this.blur();
             file = document.selection.createRange().text;    //for ie8 and filePath
@@ -21,10 +23,8 @@ spexcel.prototype.forexcel = function() {
                 alert("ActiveX Initialization Failed.Please Enabled In Settings");
             }
 
-            for(var i = 0;i < acctype.length;i++)  // check file type
-            {
-            	if(acctype[i] == filetype)
-            	{
+            for(var i = 0;i < acctype.length;i++){  // check file type
+            	if(acctype[i] == filetype){
             		num++;
             	}
             }
@@ -33,13 +33,14 @@ spexcel.prototype.forexcel = function() {
     			return false;
             }
 
-            if(filetype == "txt")    //txt
-            {
+            if(filetype == "txt"){    //txt
                 var ff = f.OpenTextFile(file, 1);
                 var html = "";
-                while (!ff.AtEndOfStream) html += ff.ReadLine();
+                while (!ff.AtEndOfStream){
+                    html += ff.ReadLine();
+                };
                 ff.Close();
-                callback(_this.fun,html)
+                callback(_this.fun,html);
             }else{                  //excel
                 var oEx = new ActiveXObject("Excel.application");
                 var oWB = oEx.Workbooks.open(file);
@@ -54,20 +55,17 @@ spexcel.prototype.forexcel = function() {
                 // alert(oWB.Worksheets(1).Cells(1, 1).value);
 
                 data.head = [];  
-                for(var j=1;j<=cols;j++)   //table head 
-                {
+                for(var j = 1;j <= cols;j++){   //table head
                 	data.head.push(sheet.Cells(1,j).value);
                 }
 
                 data.list = [];
                 // if(_this.option.rows == undefined && _this.option.cols == undefined)   //all data
                 // {
-                    for(var k = 2;k<rows;k++)
-                    {
+                    for(var k = 2;k < rows;k++){
                     	var json = {},head = data.head;
-                    	for(var l = 1;l<=cols;l++)
-                    	{
-                            json[head[l-1]] = sheet.Cells(k,l).value
+                    	for(var l = 1;l <= cols;l++){
+                            json[head[l - 1]] = sheet.Cells(k,l).value;
                     	}
                     }
                     data.list.push(json);
@@ -77,18 +75,18 @@ spexcel.prototype.forexcel = function() {
                 // }else if(_this.option.rows != undefined && _this.option.cols == undefined)
             }
 
-        }else if (window.FileReader)  //Chrome
-        {
+        }else if (window.FileReader){  //Chrome
         	// if(window.XMLHttpRequest) alert(1);   // chrome ff was supported
         	var reader = new FileReader();
             file = this.files[0];
-            if(!file) return false;
-            if(file.type.indexOf("text") > -1)    //  chrome txt
-            {
+            if(!file){
+                return false;
+            };
+            if(file.type.indexOf("text") > -1){    //  chrome txt
 	            reader.readAsText(file);    //  is async
 	            reader.onload = function(e){
 	            	callback(_this.fun,this.result);
-	            }
+	            };
             }else{                   //chrome excel
             	jsxlsx(reader,file,_this.fun);
             }
@@ -107,10 +105,9 @@ spexcel.prototype.forexcel = function() {
         //     }else{
         //       jsxlsx(reader,file,_this.fun);
         //     }
-       
         // }
-    }
-}
+    };
+};
 
 function jsxlsx(handel,file,fun){
 	var data = {};
@@ -118,22 +115,21 @@ function jsxlsx(handel,file,fun){
     handel.readAsArrayBuffer(file);    //  is async
 	handel.onload = function(){
 		var arr = fixdata(this.result);
-	    var wb = XLSX.read(btoa(arr), { type: 'base64' });
+	    var wb = XLSX.read(btoa(arr), {type: "base64"});
 		sheetData = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
-	    for(var i in sheetData[0])
-	    {
+	    for(var i in sheetData[0]){
 	        data.head.push(i);
 	    }
 		data.list = sheetData;
 		callback(fun,data);
-	}
-}
+	};
+};
 
 function callback(fun,data){
 	try {
         eval(fun + "(data)");
     } catch (e) {
-        alert("function "+ fun + " undefined");
+        alert("function " + fun + " undefined");
     }
 }
 
@@ -141,11 +137,14 @@ function fixdata(data) {
     var o = "",
         l = 0,
         w = 10240;
-    for (; l < data.byteLength / w; ++l) o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w, l * w + w)));
+    for (; l < data.byteLength / w; ++l){
+        o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w, l * w + w)));
+    }
     o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w)));
     return o;
 }
 
 function isArray(arr) {
-    return Object.prototype.toString.call(arr) == '[object Array]';
+    return Object.prototype.toString.call(arr) == "[object Array]";
 }
+})();

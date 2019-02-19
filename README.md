@@ -1,12 +1,9 @@
-# sp-excel.js v1.0.0
---------------------------------------
-
-**Used to read-write Excel and Txt File     Create By Pwh**
-
 # Browser Support
 --------------------------------------
 **IE6+**
+
 **Chrome26+**
+
 **FireFox3.6+**
 
 ## Usage

@@ -3,15 +3,27 @@ var gulp = require('gulp'),
     clean = require('gulp-clean'),
     concat = require('gulp-concat'),
     notify = require('gulp-notify'),
-    livereload = require('gulp-livereload')
+    livereload = require('gulp-livereload'),
+    eslint = require('gulp-eslint'),
+    connect = require('gulp-connect');
+
+var dev = false;
 
 gulp.task('js', function() {
-  return gulp.src('src/*.js')
-      .pipe(concat('sp-excel.js'))
-      .pipe(uglify())
+  (function(){
+    var file = gulp.src('src/*.js').pipe(notify({ message: 'lint javascript' }))
+          .pipe(eslint())
+          .pipe(eslint.format())
+          .pipe(concat('sp-excel.js'));
+    if(dev){
+        return file;
+    }else{
+      return file.pipe(eslint.failAfterError())
       .pipe(notify({ message: 'uglify javascript' }))
-      .pipe(gulp.dest('dist/'))
-      .pipe(notify({ message: 'javascript compile complete' }));
+      .pipe(uglify())
+    }
+  })(dev).pipe(gulp.dest('dist/'))
+         .pipe(notify({ message: 'javascript compile complete' }));
 });
 
 gulp.task('clean', function() {
@@ -20,16 +32,29 @@ gulp.task('clean', function() {
 });
 
 gulp.task('default', ['clean'], function() {
+  dev = false;
   gulp.start('js');
 });
 
 
 gulp.task('watch', function() {
+ 
+  dev = true; 
+
+  connect.server({
+
+      livereload:true,
+
+      port:8088
+
+   });
 
   gulp.watch('src/*.js', ['js']);
 
-  livereload.listen();
+  // livereload.listen();
 
-  gulp.watch(['dist/**','*.html']).on('change', livereload.changed);
+  gulp.watch(['dist/**','*.html']).on('change', function(event){
+      notify({ message: event.path + 'was' + event.type });
+  });
 
 });
