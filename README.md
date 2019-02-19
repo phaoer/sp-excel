@@ -1,3 +1,13 @@
+<<<<<<< HEAD
+=======
+# sp-excel.js v1.0.0
+--------------------------------------
+
+**Used to read-write Excel and Txt File**     
+
+**Create By Pwh**
+
+>>>>>>> cec56b1fff1cc06f112ef3da547c6bfbd6b87a89
 # Browser Support
 --------------------------------------
 **IE6+**
