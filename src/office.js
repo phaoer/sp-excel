@@ -115,8 +115,8 @@ function jsxlsx(handel,file,fun){
     handel.readAsArrayBuffer(file);    //  is async
 	handel.onload = function(){
 		var arr = fixdata(this.result);
-	    var wb = XLSX.read(btoa(arr), {type: "base64"});
-		sheetData = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+        var wb = XLSX.read(btoa(arr), {type: "base64"});
+        var sheetData = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
 	    for(var i in sheetData[0]){
 	        data.head.push(i);
 	    }
