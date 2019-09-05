@@ -126,11 +126,12 @@ function jsxlsx(handel,file,fun){
 };
 
 function callback(fun,data){
-	try {
-        eval(fun + "(data)");
-    } catch (e) {
-        alert("function " + fun + " undefined");
-    }
+    eval(fun + "(data)");
+	// try {
+    //     eval(fun + "(data)");
+    // } catch (e) {
+    //     alert("function " + fun + " undefined");
+    // }
 }
 
 function fixdata(data) {
